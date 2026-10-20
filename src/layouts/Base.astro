@@ -1,0 +1,31 @@
+---
+import "../styles/global.css";
+import { business } from "../data/site";
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+const title = `${business.name} | Plumbing, bathrooms and drainage in ${business.region}`;
+const description = `Plumbing, bathrooms, heating, drainage, drain jetting and CCTV drain surveys across ${business.areas.join(", ")} and ${business.region}.`;
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <!-- Demo mock-up: keep out of search results until it goes live. -->
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#141414" />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,400..900;1,62..125,400..900&display=swap"
+    />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

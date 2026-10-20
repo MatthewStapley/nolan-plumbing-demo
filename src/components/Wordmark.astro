@@ -1,0 +1,22 @@
+---
+import { business } from "../data/site";
+
+interface Props {
+  href?: string;
+}
+const { href = "#top" } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+---
+
+<a class="wordmark" href={href} aria-label={`${business.name}, back to top`}>
+  {
+    business.logo ? (
+      <img src={`${base}${business.logo}`} alt="" height="40" />
+    ) : (
+      <>
+        <span class="wordmark-name">Nolan</span>
+        <span class="wordmark-trade">Plumbing</span>
+      </>
+    )
+  }
+</a>

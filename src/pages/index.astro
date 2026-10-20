@@ -1,0 +1,409 @@
+---
+import Base from "../layouts/Base.astro";
+import Wordmark from "../components/Wordmark.astro";
+import Schematic from "../components/Schematic.astro";
+import BookingDialog from "../components/BookingDialog.astro";
+import { business, services, heroImage, work, reviews } from "../data/site";
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+const asset = (path: string) => `${base}${path.replace(/^\//, "")}`;
+const nav = [
+  { href: "#services", label: "Services" },
+  { href: "#work", label: "Our Work" },
+  { href: "#areas", label: "Areas" },
+  { href: "#contact", label: "Contact" },
+];
+const steps = [
+  { title: "Tell us what you need", body: "Send a booking request or give Sam a call with a few details about the job." },
+  { title: "Discuss the job and arrange a suitable time", body: "We'll talk it through with you and agree a time that works." },
+  { title: "Get the work booked in", body: "Once you're happy, the job goes in the diary." },
+];
+const year = new Date().getFullYear();
+const reviewsArePreview = reviews.every((r) => !r.quote);
+---
+
+<Base>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap header-row">
+      <Wordmark />
+      <nav class="nav-desktop" aria-label="Main">
+        {nav.map((n) => <a href={n.href}>{n.label}</a>)}
+      </nav>
+      <div class="header-actions">
+        <a class="header-phone" href={business.phoneHref}>
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6.6 3.5h2.6l1.4 4-2 1.5a12 12 0 0 0 6.4 6.4l1.5-2 4 1.4v2.6a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2Z" /></svg>
+          <span>{business.phoneDisplay}</span>
+        </a>
+        <button class="btn btn-red btn-sm header-book" type="button" data-book>Request a booking</button>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu">
+          <span class="sr-only">Menu</span>
+          <span class="menu-bars" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+    <div class="mobile-menu" id="mobile-menu" hidden>
+      <nav class="wrap" aria-label="Main mobile">
+        {nav.map((n) => <a href={n.href}>{n.label}</a>)}
+        <div class="mobile-menu-actions">
+          <button class="btn btn-red" type="button" data-book>Request a booking</button>
+          <a class="btn btn-outline-light" href={business.phoneHref}>Call {business.phoneDisplay}</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero" id="top">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <h1 class="hero-title">
+            <span class="line"><span>Your local</span></span>
+            <span class="line"><span>plumbing,</span></span>
+            <span class="line"><span>sorted.</span></span>
+          </h1>
+          <p class="hero-lede">
+            Plumbing, bathrooms and drainage across Port Talbot, Neath, Swansea and the surrounding South Wales area.
+          </p>
+          <div class="hero-actions">
+            <button class="btn btn-red btn-lg" type="button" data-book>Request a booking</button>
+            <a class="btn btn-outline-light btn-lg" href={business.phoneHref}>
+              Call {business.ownerFirst}
+              <span class="btn-sub">{business.phoneDisplay}</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <figure class="hero-media">
+            {
+              heroImage ? (
+                <img src={asset(heroImage.src)} alt={heroImage.alt} width={heroImage.width} height={heroImage.height} fetchpriority="high" />
+              ) : (
+                <>
+                  <Schematic />
+                  <figcaption class="placeholder-tag">Placeholder artwork. Job photo to come.</figcaption>
+                </>
+              )
+            }
+          </figure>
+
+          <form class="quick-book" data-quick-book>
+            <label for="quick-service">What do you need help with?</label>
+            <div class="quick-row">
+              <div class="select-wrap">
+                <select id="quick-service" name="service">
+                  <option value="">Choose a service</option>
+                  {services.map((s) => <option value={s.id}>{s.name}</option>)}
+                </select>
+              </div>
+              <button class="btn btn-red" type="submit">Request a booking</button>
+            </div>
+          </form>
+        </div>
+
+        <p class="hero-area">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11Z" /><circle cx="12" cy="10" r="2.3" /></svg>
+          Working in Port Talbot, Neath, Swansea and across South Wales
+        </p>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section class="services" id="services" aria-labelledby="services-title">
+      <div class="wrap services-grid">
+        <div class="services-intro">
+          <h2 id="services-title" class="h2">What we can help with</h2>
+          <p>Pick a service to start a booking request with it already filled in.</p>
+          <a class="text-link" href={business.phoneHref}>Not sure which? Call {business.ownerFirst}</a>
+        </div>
+        <ul class="service-list" role="list">
+          {
+            services.map((s) => (
+              <li class="service">
+                <h3>{s.name}</h3>
+                <p>{s.description}</p>
+                <button class="service-cta" type="button" data-book data-service={s.id} aria-label={`Request a booking for ${s.name}`}>
+                  <span>Book this</span>
+                  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+                </button>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <!-- WORK -->
+    <section class="work" id="work" aria-labelledby="work-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="work-title" class="h2">Recent work</h2>
+          <p>
+            More jobs on Instagram at <a href={business.instagram} target="_blank" rel="noopener">{business.instagramHandle}</a>
+          </p>
+        </div>
+        <ul class="work-grid" role="list">
+          {
+            work.map((w, i) => (
+              <li class={`work-item work-item-${i + 1}`}>
+                <figure>
+                  {w.src ? (
+                    <img src={asset(w.src)} alt={w.alt} width={w.width} height={w.height} loading="lazy" decoding="async" />
+                  ) : (
+                    <div class="work-placeholder" role="img" aria-label="Placeholder for a project photo">
+                      <span>Placeholder</span>
+                    </div>
+                  )}
+                  <figcaption>{w.caption}</figcaption>
+                </figure>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <!-- REVIEWS -->
+    <section class="reviews" aria-labelledby="reviews-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="reviews-title" class="h2">What customers say</h2>
+          {reviewsArePreview && <p class="preview-tag">Review layout preview</p>}
+        </div>
+        <ul class="review-grid" role="list">
+          {
+            reviews.map((r) => (
+              <li class={r.quote ? "review" : "review review-placeholder"}>
+                <svg class="review-mark" viewBox="0 0 32 24" width="32" height="24" aria-hidden="true">
+                  <path d="M0 24V14C0 6 4 1 12 0v5c-4 1-6 4-6 8h6v11H0Zm20 0V14c0-8 4-13 12-14v5c-4 1-6 4-6 8h6v11H20Z" />
+                </svg>
+                {r.quote ? (
+                  <figure>
+                    <blockquote>
+                      <p>{r.quote}</p>
+                    </blockquote>
+                    {r.name && (
+                      <figcaption>
+                        <span class="review-name">{r.name}</span>
+                        {r.location && <span class="review-place">{r.location}</span>}
+                      </figcaption>
+                    )}
+                  </figure>
+                ) : (
+                  <p class="review-empty">Customer review to be added</p>
+                )}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <!-- PROCESS -->
+    <section class="process" aria-labelledby="process-title">
+      <div class="wrap">
+        <h2 id="process-title" class="h2">How booking works</h2>
+        <ol class="steps" role="list">
+          {
+            steps.map((s, i) => (
+              <li class="step">
+                <span class="step-num" aria-hidden="true">{i + 1}</span>
+                <h3>{s.title}</h3>
+                <p>{s.body}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <!-- AREAS -->
+    <section class="areas" id="areas" aria-labelledby="areas-title">
+      <div class="wrap areas-grid">
+        <h2 id="areas-title" class="areas-title">Where we work</h2>
+        <ul class="area-list" role="list">
+          {business.areas.map((a) => <li>{a}</li>)}
+        </ul>
+        <div class="areas-elsewhere">
+          <p>Elsewhere in South Wales? Get in touch to check coverage.</p>
+          <a class="btn btn-outline-light" href={business.phoneHref}>Call to check</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="contact" id="contact" aria-labelledby="contact-title">
+      <div class="wrap contact-grid">
+        <div>
+          <h2 id="contact-title" class="h2">Tell {business.ownerFirst} what you need</h2>
+          <p class="contact-lede">Send a booking request with a few details, or pick up the phone.</p>
+          <div class="contact-actions">
+            <button class="btn btn-red btn-lg" type="button" data-book>Request a booking</button>
+            <a class="btn btn-outline-dark btn-lg" href={business.instagram} target="_blank" rel="noopener">Message on Instagram</a>
+            {
+              business.whatsapp && (
+                <a class="btn btn-outline-dark btn-lg" href={`https://wa.me/${business.whatsapp}`} target="_blank" rel="noopener">WhatsApp</a>
+              )
+            }
+          </div>
+        </div>
+        <a class="big-phone" href={business.phoneHref}>
+          <span class="big-phone-label">Call {business.ownerFirst}</span>
+          <span class="big-phone-number">{business.phoneDisplay}</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div class="footer-brand">
+        <Wordmark />
+        <p>Plumbing, bathrooms, heating and drainage in {business.region}.</p>
+      </div>
+      <div>
+        <h2 class="footer-h">Contact</h2>
+        <a href={business.phoneHref}>{business.phoneDisplay}</a>
+        <a href={business.instagram} target="_blank" rel="noopener">Instagram {business.instagramHandle}</a>
+      </div>
+      <div>
+        <h2 class="footer-h">Areas</h2>
+        <p>{business.areas.join(", ")} and the surrounding South Wales area</p>
+      </div>
+    </div>
+    <div class="wrap footer-base">
+      <p>&copy; {year} {business.name}</p>
+      <p>Website mock-up for demonstration</p>
+    </div>
+  </footer>
+
+  <div class="action-bar" aria-label="Quick actions">
+    <a class="btn btn-outline-light" href={business.phoneHref}>
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6.6 3.5h2.6l1.4 4-2 1.5a12 12 0 0 0 6.4 6.4l1.5-2 4 1.4v2.6a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2Z" /></svg>
+      Call
+    </a>
+    <button class="btn btn-red" type="button" data-book>Request a booking</button>
+  </div>
+
+  <BookingDialog />
+
+  <script>
+    // ---- Mobile menu ----
+    const toggle = document.querySelector<HTMLButtonElement>(".menu-toggle")!;
+    const menu = document.getElementById("mobile-menu")!;
+    const setMenu = (open: boolean) => {
+      toggle.setAttribute("aria-expanded", String(open));
+      menu.hidden = !open;
+      document.documentElement.classList.toggle("menu-open", open);
+    };
+    toggle.addEventListener("click", () => setMenu(toggle.getAttribute("aria-expanded") !== "true"));
+    menu.addEventListener("click", (e) => {
+      if ((e.target as HTMLElement).closest("a")) setMenu(false);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !menu.hidden) {
+        setMenu(false);
+        toggle.focus();
+      }
+    });
+    matchMedia("(min-width: 960px)").addEventListener("change", (e) => e.matches && setMenu(false));
+
+    // ---- Booking dialog ----
+    const dialog = document.getElementById("booking") as HTMLDialogElement;
+    const form = dialog.querySelector<HTMLFormElement>("[data-booking-form]")!;
+    const done = dialog.querySelector<HTMLElement>("[data-booking-done]")!;
+    const field = (name: string) => form.elements.namedItem(name) as HTMLInputElement;
+    let opener: HTMLElement | null = null;
+    let attempted = false;
+
+    const today = () => {
+      const d = new Date();
+      d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+      return d.toISOString().slice(0, 10);
+    };
+
+    const rules: Record<string, (v: string) => string> = {
+      service: (v) => (v ? "" : "Choose the service you need."),
+      name: (v) => (v.trim() ? "" : "Enter your name."),
+      phone: (v) =>
+        /^(?:\+44|0044|0)\d{9,10}$/.test(v.replace(/[\s()-]/g, "")) ? "" : "Enter a UK phone number, e.g. 07700 900123.",
+      postcode: (v) =>
+        /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i.test(v.trim()) ? "" : "Enter a full postcode, e.g. SA1 1AA.",
+      date: (v) => (!v || v >= today() ? "" : "Choose today or a later date."),
+      details: (v) => (v.trim().length >= 10 ? "" : "Add a few words about the job (at least 10 characters)."),
+    };
+
+    const check = (name: string) => {
+      const el = field(name);
+      const msg = rules[name](el.value);
+      el.setAttribute("aria-invalid", msg ? "true" : "false");
+      document.getElementById(`e-${name}`)!.textContent = msg;
+      return !msg;
+    };
+
+    const resetDialog = () => {
+      form.reset();
+      attempted = false;
+      Object.keys(rules).forEach((n) => {
+        field(n).removeAttribute("aria-invalid");
+        document.getElementById(`e-${n}`)!.textContent = "";
+      });
+      form.hidden = false;
+      done.hidden = true;
+    };
+
+    const openBooking = (service: string, trigger: HTMLElement | null) => {
+      setMenu(false);
+      resetDialog();
+      opener = trigger;
+      field("date").min = today();
+      if (service) field("service").value = service;
+      dialog.showModal();
+      (service ? field("name") : field("service")).focus();
+    };
+
+    document.addEventListener("click", (e) => {
+      const t = (e.target as HTMLElement).closest<HTMLElement>("[data-book]");
+      if (t) openBooking(t.dataset.service || "", t);
+    });
+
+    document.querySelector<HTMLFormElement>("[data-quick-book]")!.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const select = document.getElementById("quick-service") as HTMLSelectElement;
+      openBooking(select.value, e.submitter as HTMLElement);
+    });
+
+    dialog.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", () => dialog.close()));
+    dialog.addEventListener("close", () => {
+      resetDialog();
+      opener?.focus();
+    });
+
+    form.addEventListener("input", (e) => {
+      const name = (e.target as HTMLInputElement).name;
+      if (attempted && rules[name]) check(name);
+    });
+    form.addEventListener("change", (e) => {
+      const name = (e.target as HTMLInputElement).name;
+      if (attempted && rules[name]) check(name);
+    });
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      attempted = true;
+      const invalid = Object.keys(rules).filter((n) => !check(n));
+      if (invalid.length) {
+        field(invalid[0]).focus();
+        return;
+      }
+      // Demo only: nothing is stored or sent. Clear the entered details.
+      form.reset();
+      form.hidden = true;
+      done.hidden = false;
+      done.querySelector<HTMLElement>("h3")!.focus();
+    });
+  </script>
+</Base>

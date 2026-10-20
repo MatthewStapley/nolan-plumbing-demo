@@ -1,0 +1,78 @@
+---
+import { business, services } from "../data/site";
+---
+
+<dialog class="sheet" id="booking" aria-labelledby="booking-title">
+  <div class="sheet-inner">
+    <header class="sheet-head">
+      <h2 id="booking-title">Request a booking</h2>
+      <button class="icon-btn" type="button" data-close aria-label="Close booking form">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+      </button>
+    </header>
+
+    <p class="demo-note" role="note">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 8v5M12 16.5v.5" /></svg>
+      Demo form — details are not sent
+    </p>
+
+    <form class="booking-form" novalidate data-booking-form>
+      <div class="field">
+        <label for="f-service">Service required</label>
+        <select id="f-service" name="service" required aria-describedby="e-service">
+          <option value="">Choose a service</option>
+          {services.map((s) => <option value={s.id}>{s.name}</option>)}
+          <option value="other">Something else</option>
+        </select>
+        <p class="error" id="e-service" aria-live="polite"></p>
+      </div>
+
+      <div class="field-pair">
+        <div class="field">
+          <label for="f-name">Name</label>
+          <input id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="e-name" />
+          <p class="error" id="e-name" aria-live="polite"></p>
+        </div>
+        <div class="field">
+          <label for="f-phone">Phone number</label>
+          <input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required aria-describedby="e-phone" />
+          <p class="error" id="e-phone" aria-live="polite"></p>
+        </div>
+      </div>
+
+      <div class="field-pair">
+        <div class="field">
+          <label for="f-postcode">Postcode</label>
+          <input id="f-postcode" name="postcode" type="text" autocomplete="postal-code" autocapitalize="characters" required aria-describedby="e-postcode" />
+          <p class="error" id="e-postcode" aria-live="polite"></p>
+        </div>
+        <div class="field">
+          <label for="f-date">Preferred date <span class="optional">(optional)</span></label>
+          <input id="f-date" name="date" type="date" aria-describedby="h-date e-date" />
+          <p class="hint" id="h-date">A preference only. The date is agreed with you afterwards.</p>
+          <p class="error" id="e-date" aria-live="polite"></p>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="f-details">About the job</label>
+        <textarea id="f-details" name="details" rows="3" required aria-describedby="h-details e-details" maxlength="600"></textarea>
+        <p class="hint" id="h-details">A sentence or two is plenty, e.g. what's leaking or blocked and where.</p>
+        <p class="error" id="e-details" aria-live="polite"></p>
+      </div>
+
+      <button class="btn btn-red btn-block" type="submit">Request booking</button>
+      <p class="sheet-alt">
+        Rather talk it through? <a href={business.phoneHref}>Call {business.ownerFirst} on {business.phoneDisplay}</a>
+      </p>
+    </form>
+
+    <div class="sheet-done" data-booking-done hidden>
+      <div class="done-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="28" height="28"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+      </div>
+      <h3 tabindex="-1">Demo complete — this is how a booking request would look. No request has been sent.</h3>
+      <button class="btn btn-dark" type="button" data-close>Close</button>
+    </div>
+  </div>
+</dialog>
